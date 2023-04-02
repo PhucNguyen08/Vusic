@@ -11,6 +11,13 @@
     padding: 15px;
     font-weight: bolder;
     user-select: none;
+    position: relative;
+  }
+
+  .btn {
+    position: absolute;
+    top: 9px;
+    right: 0;
   }
   .lib-sub {
     padding: 10px;
@@ -18,7 +25,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    .MuiButton-startIcon{
+    .MuiButton-startIcon {
       color: #07689f;
     }
   }
@@ -27,12 +34,12 @@
     flex-flow: column;
     width: 100%;
   }
-  .playlist{
+  .playlist {
     flex: 1;
-    .p1{
+    .p1 {
       border-top: 1px solid #e0e0e0;
     }
-    .lib-sub:hover{
+    .lib-sub:hover {
       background-color: #a2d5f2;
     }
   }
