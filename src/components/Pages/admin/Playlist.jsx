@@ -1,50 +1,42 @@
+import { useState } from 'react';
 import Table from 'react-bootstrap/Table';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 function Playlist() {
+  const [isShowList, setIsShowList] = useState(false);
+
+  const handleShowList = () => setIsShowList(true);
+
   return (
     <div>
-      <Form>
-        <Form.Group className="mb-3 w-25" controlId="formBasicEmail">
-          <Form.Label>UserName</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" />
-        </Form.Group>
-        <Form.Group className="mb-3 w-25" controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control type="password" placeholder="Password" />
-        </Form.Group>
-        <Form.Group className="mb-3 w-25" controlId="formBasicRole">
-          <Form.Label>Role</Form.Label>
-          <Form.Control type="text" placeholder="Role" />
-        </Form.Group>
-        <Button variant="primary" type="submit">
-          Thêm
-        </Button>
-      </Form>
-      <Table striped bordered hover size="sm">
+      <Button variant="primary" className="mt-2 ms-1" onClick={handleShowList}>
+        Danh Sách
+      </Button>
+      <Table striped bordered hover size="sm" className="mt-2">
         <thead>
           <tr>
             <th>STT</th>
-            <th>UserName</th>
-            <th>Password</th>
-            <th>Role</th>
+            <th>Name</th>
+            <th>Image</th>
+            <th>User</th>
+            <th>Songs</th>
             <th>Action</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-            <td>
-              <button>Edit</button>
-              <button className="ms-1">Delete</button>
-            </td>
-          </tr>
-        </tbody>
+        {isShowList && (
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Mark</td>
+              <td>Otto</td>
+              <td>Otto</td>
+              <td>@mdo</td>
+              <td>
+                <button className="ms-1">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        )}
       </Table>
     </div>
   );
