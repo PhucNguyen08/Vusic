@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
-import { getSongs, insertSong } from '../../../api/apisong';
-import Table from 'react-bootstrap/Table';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import Modal from 'react-bootstrap/Modal';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { useState, useEffect, useRef } from "react";
+import { getSongs, insertSong } from "../../../api/apisong";
+import Table from "react-bootstrap/Table";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import Modal from "react-bootstrap/Modal";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function Song() {
   const inputName = useRef();
@@ -15,27 +15,27 @@ function Song() {
   const [songs, setSongs] = useState([]);
   const [isShowList, setIsShowList] = useState(false);
   const [file, setFile] = useState();
-  const [fileName, setFileName] = useState('');
-  console.log(file, fileName);
+  const [fileName, setFileName] = useState("");
+  // console.log(file, fileName);
 
   const handleShowList = () => setIsShowList(true);
 
-  console.log(selectedFile);
-  console.log(songs);
+  // console.log( selectedFile);
+  // console.log(songs);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const handleInsert = dataSong => {
+  const handleInsert = (dataSong) => {
     insertSong(dataSong)
-      .then(data => console.log(data))
-      .catch(err => alert(err));
+      .then((data) => console.log(data))
+      .catch((err) => console.log(dataSong));
   };
 
   useEffect(() => {
     getSongs()
-      .then(data => setSongs(data))
-      .catch(err => alert(err));
+      .then((data) => setSongs(data))
+      .catch((err) => alert(err));
   }, []);
 
   // create a preview as a side effect, whenever selected file is changed
@@ -52,7 +52,7 @@ function Song() {
     return () => URL.revokeObjectURL(objectUrl);
   }, [selectedFile]);
 
-  const onSelectFile = e => {
+  const onSelectFile = (e) => {
     setFile(e.target.files[0]);
     setFileName(e.target.files[0].name);
     if (!e.target.files || e.target.files.length === 0) {
@@ -94,7 +94,7 @@ function Song() {
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicImage">
               <Form.Label>Image</Form.Label>
-              <Form.Control type="file" onChange={onSelectFile} />
+              <Form.Control type="file" name="image" onChange={onSelectFile} />
               {selectedFile && (
                 <img src={preview} alt="ảnh" className="w-100 h-100 mt-2" />
               )}
@@ -131,8 +131,9 @@ function Song() {
               handleClose();
               handleInsert({
                 name: inputName.current.value,
-                image: file,
+                image: selectedFile,
               });
+              // console.log(selectedFile);
             }}
           >
             Lưu
