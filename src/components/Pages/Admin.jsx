@@ -9,13 +9,15 @@ import { ThemeContext } from '../../api/Theme';
 import Profile from './Profile';
 import CurrentPlayingLarge from '../fragment/CurrentPlayingLarge';
 import Account from './admin/Account';
-import About from './About';
 import User from './admin/User';
 import Song from './admin/Song';
 import Artist from './admin/Artist';
+import DetailAlbumAdmin from './admin/DetailAlbumAdmin';
 import Album from './admin/Album';
 import Playlist from './admin/Playlist';
 import { Skeleton } from '@material-ui/lab';
+import AlbumCardContainer from '../fragment/AlbumCardContainer';
+import DetailAlbum from './DetailAlbum';
 
 function getCurrPage(pathName) {
   switch (pathName) {
@@ -23,8 +25,8 @@ function getCurrPage(pathName) {
       return <MusicCardContainer />;
     case '/admin/account':
       return <Account />;
-    case '/admin/about':
-      return <About />;
+    case '/admin/list-album':
+      return <AlbumCardContainer />;
     case '/admin/profile':
       return <Profile />;
     case '/admin/user':
@@ -38,6 +40,12 @@ function getCurrPage(pathName) {
     case '/admin/playlist':
       return <Playlist />;
     default:
+      if (pathName.startsWith('/admin/album/')) {
+        return <DetailAlbumAdmin />;
+      }
+      if (pathName.startsWith('/admin/list-album/')) {
+        return <DetailAlbum />;
+      }
       return null;
   }
 }

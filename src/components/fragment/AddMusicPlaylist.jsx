@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import '../assets/scss/MusicCard.scss';
+import '../assets/scss/AddMusicPlaylist.scss';
 import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
 import { useDispatch } from 'react-redux';
 import { increaseTimesPlayed, setCurrentPlaying } from '../../actions/actions';
@@ -7,8 +7,8 @@ import Name from './Name';
 import { Skeleton } from '@material-ui/lab';
 import Box from '@material-ui/core/Box';
 
-function MusicCard(props) {
-  const { name, image } = props.music;
+function AddMusicPlaylist(props) {
+  const { name, img } = props.music;
 
   const [isHovered, setHovered] = useState(false);
 
@@ -20,7 +20,7 @@ function MusicCard(props) {
 
   function handlePlay() {
     dispatch(setCurrentPlaying(props.music));
-    dispatch(increaseTimesPlayed(props.id));
+    dispatch(increaseTimesPlayed(props.music.id));
   }
 
   const [loaded, setLoaded] = useState(false);
@@ -30,13 +30,13 @@ function MusicCard(props) {
   }, []);
 
   return (
-    <div className={'music-card'}>
+    <div className={'wrapper-music-card'}>
       {!loaded ? (
         <div className={'Skeleton-top'}>
-          <Skeleton variant="rect" width={210} height={210} />
+          <Skeleton variant="rect" width={50} height={50} />
           <Box pt={0.5}>
             <Skeleton />
-            <Skeleton width="60%" />
+            <Skeleton width="20%" />
           </Box>
         </div>
       ) : (
@@ -46,23 +46,22 @@ function MusicCard(props) {
             className={'music-card-cover'}
             onMouseOver={handleResponse}
           >
-            <img src={image} alt={name} />
+            <img src={require('../assets/img/' + img)} alt={name} />
             <div className="play-circle">
               <PlayCircleFilledWhiteIcon />
             </div>
+            <React.Fragment>
+              <Name
+                name={name}
+                className={'song-name ms-2'}
+                length={name.length}
+              />
+            </React.Fragment>
           </div>
-          <React.Fragment>
-            <Name name={name} className={'song-name'} />
-            {/* <Name
-              name={author_name}
-              className={'author-name'}
-              length={author_name.length}
-            /> */}
-          </React.Fragment>
         </>
       )}
     </div>
   );
 }
 
-export default MusicCard;
+export default AddMusicPlaylist;

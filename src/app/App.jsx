@@ -1,32 +1,32 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
 import Home from '../components/Pages/Home';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Login from '../components/Pages/Login';
 import Admin from '../components/Pages/Admin';
 import { ThemeContext, themes } from '../api/Theme';
-import musicDB from '../db/music';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPlaylist } from '../actions/actions';
 import SignIn from '../components/Pages/SignIn';
 import SignUp from '../components/Pages/SignUp';
+import { getSongs } from '../api/apisong';
 
 const App = () => {
+  const [songs, setSongs] = useState([]);
   const { language } = useSelector(state => state.musicReducer);
-
   const dispatch = useDispatch();
+
   useEffect(() => {
-    if (language === null || language.includes('any')) {
-      dispatch(setPlaylist(musicDB));
-    } else if (language.includes('hindi')) {
-      alert('No hindi tracks available');
-    } else {
-      let x = musicDB.filter(
-        item => item.lang && language.includes(item.lang.toLowerCase())
-      );
-      dispatch(setPlaylist(x));
+    getSongs()
+      .then(data => setSongs(data))
+      .catch(err => alert(err));
+  }, []);
+
+  useEffect(() => {
+    if (language === null) {
+      dispatch(setPlaylist(songs));
     }
-  }, [dispatch, language]);
+  }, [dispatch, language, songs]);
 
   return (
     <ThemeContext.Provider value={themes.light}>

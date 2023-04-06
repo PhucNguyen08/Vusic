@@ -1,16 +1,13 @@
 import { useContext, useState, useRef } from 'react';
 import SideBarOptions from './SideBarOptions';
 import { ThemeContext } from '../../api/Theme';
-import {
-  Album,
-  HomeOutlined,
-  PlaylistPlay,
-  SearchOutlined,
-  Add,
-} from '@material-ui/icons';
+import { Add } from '@material-ui/icons';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import Cookies from 'js-cookie';
+import { insertPlaylist } from '../../api/apiplayist';
+import jwt_decode from 'jwt-decode';
 import '../assets/scss/SideBar.scss';
 
 function SideBar() {
@@ -21,8 +18,21 @@ function SideBar() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  let decoded;
+
+  if (Cookies?.get('token') === undefined) {
+  } else {
+    decoded = jwt_decode(Cookies?.get('token'));
+    console.log(decoded);
+  }
+
   const handleCreate = () => {
-    console.log(inputCreateRef.current.value);
+    // console.log(datalist);
+    const data = new FormData();
+    data.append('name', inputCreateRef.current.value);
+    insertPlaylist(data)
+      .then(data => console.log(data))
+      .catch(err => console.log(err));
   };
 
   return (
@@ -32,51 +42,39 @@ function SideBar() {
           <p className={'p1'}>
             <span>LIBRARY</span>
           </p>
+          <SideBarOptions className={'lib-sub'} href={'/home'} title={'Home'} />
           <SideBarOptions
             className={'lib-sub'}
-            Icon={HomeOutlined}
-            href={'/home'}
-            title={'Home'}
-          />
-          <SideBarOptions
-            className={'lib-sub'}
-            Icon={Album}
             href={'/home/album'}
             title={'Album'}
           />
           <SideBarOptions
             className={'lib-sub'}
-            Icon={SearchOutlined}
             href={'/home/search'}
             title={'Search'}
           />
           {/*<SideBarOptions className={"lib-sub"} Icon={AlbumIcon} href={"/home/album"}  title={"Album"}/>
                 <SideBarOptions className={"lib-sub"} Icon={EmojiPeopleIcon} href={"/home/artist"}  title={"Artist"}/>*/}
         </div>
-        <div className="aside-bar-container playlist">
-          <div>
-            <p className={'p1'}>
-              <span>MY PLAYLIST</span>
-              <Button variant="light" onClick={handleShow}>
-                <span>
-                  <Add />
-                </span>
-              </Button>
-            </p>
-            <SideBarOptions
-              className={'lib-sub'}
-              Icon={PlaylistPlay}
-              href={'/home/playlist/instrumental'}
-              title={'Instrumental'}
-            />
-            <SideBarOptions
-              className={'lib-sub'}
-              Icon={PlaylistPlay}
-              href={'/home/playlist/electronic'}
-              title={'Electronic'}
-            />
+        {!(Cookies.get('token') === undefined) && (
+          <div className="aside-bar-container playlist">
+            <div>
+              <p className={'p1'}>
+                <span>MY PLAYLIST</span>
+                <Button variant="light" onClick={handleShow}>
+                  <span>
+                    <Add />
+                  </span>
+                </Button>
+              </p>
+              <SideBarOptions
+                className={'lib-sub'}
+                href={'/home/playlists/642b70a67134ddb1a057f08a'}
+                title={'Playlist1'}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </aside>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
@@ -95,7 +93,7 @@ function SideBar() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={handleCreate}>
+          <Button variant="primary" onClick={() => handleCreate()}>
             Tạo
           </Button>
         </Modal.Footer>

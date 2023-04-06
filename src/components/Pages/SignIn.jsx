@@ -10,6 +10,10 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { loginUser } from '../../api/apiuser';
+import { useHistory } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import jwt_decode from 'jwt-decode';
 
 function Copyright(props) {
   return (
@@ -32,13 +36,33 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignIn() {
+  const history = useHistory();
   const handleSubmit = event => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
-      email: data.get('email'),
+      username: data.get('email'),
       password: data.get('password'),
     });
+    loginUser({
+      username: data.get('email'),
+      password: data.get('password'),
+    })
+      .then(data => {
+        if (data.message) {
+          console.log(data);
+        } else {
+          Cookies.set('token', data);
+          var decoded = jwt_decode(data);
+          if (decoded.role) {
+            history.push('/admin');
+          } else {
+            history.push('/home');
+          }
+          // console.log(data);
+        }
+      })
+      .catch(err => alert(err));
   };
 
   return (

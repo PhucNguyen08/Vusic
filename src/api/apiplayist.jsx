@@ -1,3 +1,4 @@
+import axios from 'axios';
 const URL = 'http://localhost:5000';
 
 const getPlaylists = async () => {
@@ -13,9 +14,7 @@ const getPlaylists = async () => {
 const insertPlaylist = async dataPlaylist => {
   const response = await fetch(`${URL}/playlists/create`, {
     method: 'POST',
-    body: JSON.stringify({
-      dataPlaylist,
-    }),
+    body: JSON.stringify(dataPlaylist),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -23,7 +22,23 @@ const insertPlaylist = async dataPlaylist => {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error('Could not Songs');
+    throw new Error('Could not playlists');
+  }
+  return data;
+};
+
+const insertPlaylistAxios = async dataPlaylist => {
+  const response = await fetch(`${URL}/playlists/create`, {
+    method: 'POST',
+    body: JSON.stringify(dataPlaylist),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error('Could not playlists');
   }
   return data;
 };
@@ -31,9 +46,7 @@ const insertPlaylist = async dataPlaylist => {
 const updatePlaylist = async dataPlaylist => {
   const response = await fetch(`${URL}/playlists/${dataPlaylist._id}`, {
     method: 'PUT',
-    body: JSON.stringify({
-      dataPlaylist,
-    }),
+    body: JSON.stringify(dataPlaylist),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -61,4 +74,10 @@ const deletePlaylist = async id => {
   return data;
 };
 
-export { getPlaylists, insertPlaylist, updatePlaylist, deletePlaylist };
+export {
+  getPlaylists,
+  insertPlaylist,
+  updatePlaylist,
+  deletePlaylist,
+  insertPlaylistAxios,
+};

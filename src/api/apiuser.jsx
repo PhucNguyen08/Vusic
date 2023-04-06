@@ -1,7 +1,7 @@
 const URL = 'http://localhost:5000';
 
-const getUsers = async () => {
-  const response = await fetch(`${URL}/users`);
+const getUser = async () => {
+  const response = await fetch(`${URL}/users/profile`);
   const data = await response.json();
 
   if (!response.ok) {
@@ -11,11 +11,9 @@ const getUsers = async () => {
 };
 
 const insertUser = async dataUsers => {
-  const response = await fetch(`${URL}/users/create`, {
+  const response = await fetch(`${URL}/auth/register`, {
     method: 'POST',
-    body: JSON.stringify({
-      dataUsers,
-    }),
+    body: JSON.stringify(dataUsers),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -28,12 +26,26 @@ const insertUser = async dataUsers => {
   return data;
 };
 
+const loginUser = async dataUsers => {
+  const response = await fetch(`${URL}/auth/login`, {
+    method: 'POST',
+    body: JSON.stringify(dataUsers),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error('Could not update User');
+  }
+  return data;
+};
+
 const updateUser = async dataUsers => {
   const response = await fetch(`${URL}/users/${dataUsers._id}`, {
     method: 'PUT',
-    body: JSON.stringify({
-      dataUsers,
-    }),
+    body: JSON.stringify(dataUsers),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -61,4 +73,4 @@ const deleteUser = async id => {
   return data;
 };
 
-export { getUsers, insertUser, updateUser, deleteUser };
+export { getUser, insertUser, updateUser, deleteUser, loginUser };

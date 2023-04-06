@@ -2,16 +2,16 @@ import { useEffect, useState } from 'react';
 import '../assets/scss/MusicCardContainer.scss';
 import MusicCard from './MusicCard';
 import Container from './Container';
-import { getSongs } from '../../api/apisong';
+import { getOneAlbum } from '../../api/apialbum';
 
-function MusicCardContainer() {
+function MusicCardAlbum(props) {
   const [songs, setSongs] = useState([]);
 
   useEffect(() => {
-    getSongs()
-      .then(data => setSongs(data))
+    getOneAlbum(props.id)
+      .then(data => setSongs(data.songs))
       .catch(err => alert(err));
-  }, []);
+  }, [props.id]);
 
   return (
     <Container>
@@ -24,4 +24,4 @@ function MusicCardContainer() {
   );
 }
 
-export default MusicCardContainer;
+export default MusicCardAlbum;

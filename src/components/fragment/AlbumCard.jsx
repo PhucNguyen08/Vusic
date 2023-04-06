@@ -7,7 +7,7 @@ import Box from '@material-ui/core/Box';
 import { Link } from 'react-router-dom';
 
 function AlbumCard(props) {
-  const { name, img, author_name, id } = props.music;
+  const { name, image, _id } = props.music;
 
   const [loaded, setLoaded] = useState(false);
 
@@ -27,20 +27,20 @@ function AlbumCard(props) {
         </div>
       ) : (
         <>
-          <Link to={`/home/album/${id}`}>
+          <Link to={`/home/album/${_id}`}>
             <div className={'album-card-cover'}>
-              <img src={require('../assets/img/' + img)} alt={name} />
+              <img src={image} alt={name} />
               <div className="play-circle">
                 <PlayCircleFilledWhiteIcon />
               </div>
             </div>
             <React.Fragment>
               <Name name={name} className={'song-name'} length={name.length} />
-              <Name
+              {/* <Name
                 name={author_name}
                 className={'author-name'}
                 length={author_name.length}
-              />
+              /> */}
             </React.Fragment>
           </Link>
         </>

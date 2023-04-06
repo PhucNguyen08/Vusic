@@ -1,3 +1,4 @@
+import axios from 'axios';
 const URL = 'http://localhost:5000';
 
 const getSongs = async () => {
@@ -13,9 +14,7 @@ const getSongs = async () => {
 const insertSong = async dataSong => {
   const response = await fetch(`${URL}/songs/create`, {
     method: 'POST',
-    body: JSON.stringify({
-      dataSong,
-    }),
+    body: JSON.stringify(dataSong),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -28,22 +27,24 @@ const insertSong = async dataSong => {
   return data;
 };
 
-const updateSong = async dataSong => {
-  const response = await fetch(`${URL}/songs/${dataSong._id}`, {
-    method: 'PUT',
-    body: JSON.stringify({
-      dataSong,
-    }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  const data = await response.json();
+const insertSongAxios = formData => {
+  axios
+    .post(`${URL}/songs/create`, formData)
+    .then(res => {
+      alert('Bạn đã thêm mới thành công');
+      console.log(res);
+    })
+    .catch(err => console.log(err));
+};
 
-  if (!response.ok) {
-    throw new Error('Could not Songs');
-  }
-  return data;
+const updateSong = async (dataSong, id) => {
+  await axios
+    .put(`${URL}/songs/${id}`, dataSong)
+    .then(res => {
+      alert(res.data.message);
+      console.log(res);
+    })
+    .catch(err => alert(err));
 };
 
 const deleteSong = async id => {
@@ -61,4 +62,4 @@ const deleteSong = async id => {
   return data;
 };
 
-export { getSongs, insertSong, updateSong, deleteSong };
+export { getSongs, insertSong, updateSong, deleteSong, insertSongAxios };

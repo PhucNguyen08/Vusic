@@ -1,35 +1,109 @@
 import { useState, useEffect, useRef } from "react";
-import { getSongs, insertSong } from "../../../api/apisong";
+import {
+  getSongs,
+  insertSongAxios,
+  deleteSong,
+  updateSong,
+} from "../../../api/apisong";
+import { getArtists } from "../../../api/apiaritst";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import Modal from "react-bootstrap/Modal";
+// import Modal from 'react-bootstrap/Modal';
+
 import "bootstrap/dist/css/bootstrap.min.css";
+import "../css/Song.scss";
 
 function Song() {
   const inputName = useRef();
-
-  const [show, setShow] = useState(false);
+  const genreRef = useRef();
+  const inputLyricsRef = useRef();
+  const artistRef = useRef();
   const [selectedFile, setSelectedFile] = useState();
+  const [selectedSong, setSelectedSong] = useState();
   const [preview, setPreview] = useState();
   const [songs, setSongs] = useState([]);
+  const [artists, setArtists] = useState([]);
+  const [isEdit, setIsEdit] = useState(false);
   const [isShowList, setIsShowList] = useState(false);
-  const [file, setFile] = useState();
-  const [fileName, setFileName] = useState("");
-  // console.log(file, fileName);
+  const [IdSongs, setIdSongs] = useState();
 
   const handleShowList = () => setIsShowList(true);
 
-  // console.log( selectedFile);
-  // console.log(songs);
+  const handleEdit = (data) => {
+    setIsEdit(true);
+    inputName.current.value = data.name;
+    genreRef.current.value = data.genre;
+    inputLyricsRef.current.value = data.lyrics;
+    artistRef.current.value = data.artist;
+  };
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  // console.log(IdSongs);
 
-  const handleInsert = (dataSong) => {
-    insertSong(dataSong)
-      .then((data) => console.log(data))
-      .catch((err) => console.log(dataSong));
+  const handleDelete = async (id) => {
+    await deleteSong(id)
+      .then((data) => {
+        // console.log(data);
+        alert(data.message);
+      })
+      .catch((err) => alert(err));
+    await getSongs()
+      .then((data) => setSongs(data))
+      .catch((err) => alert(err));
+  };
+
+  useEffect(() => {
+    getArtists()
+      .then((data) => setArtists(data))
+      .catch((err) => alert(err));
+  }, []);
+
+  // const handleClose = () => setShow(false);
+  // const handleShow = () => {
+  //   setShow(true);
+  // };
+
+  const handleUpdate = async () => {
+    const data = new FormData();
+    data.append("name", inputName.current.value);
+    if (selectedFile) {
+      data.append("image", selectedFile);
+    }
+    data.append("lyrics", inputLyricsRef.current.value);
+    if (selectedSong) {
+      data.append("audio", selectedSong);
+    }
+    data.append("artist", artistRef.current.value);
+    data.append("genre", genreRef.current.value);
+    setIsEdit(false);
+    await updateSong(data, IdSongs);
+    await getSongs()
+      .then((data) => setSongs(data))
+      .catch((err) => alert(err));
+  };
+
+  const handleClear = () => {
+    inputName.current.value = "";
+    genreRef.current.value = "";
+    inputLyricsRef.current.value = "";
+    artistRef.current.value = "";
+    setPreview(undefined);
+    setSelectedFile(undefined);
+    setSelectedSong(undefined);
+  };
+
+  const handleInsert = async () => {
+    const data = new FormData();
+    data.append("name", inputName.current.value);
+    data.append("image", selectedFile);
+    data.append("lyrics", inputLyricsRef.current.value);
+    data.append("audio", selectedSong);
+    data.append("artist", artistRef.current.value);
+    data.append("genre", genreRef.current.value);
+    await insertSongAxios(data);
+    await getSongs()
+      .then((data) => setSongs(data))
+      .catch((err) => alert(err));
   };
 
   useEffect(() => {
@@ -53,8 +127,6 @@ function Song() {
   }, [selectedFile]);
 
   const onSelectFile = (e) => {
-    setFile(e.target.files[0]);
-    setFileName(e.target.files[0].name);
     if (!e.target.files || e.target.files.length === 0) {
       setSelectedFile(undefined);
       return;
@@ -63,117 +135,158 @@ function Song() {
     // I've kept this example simple by using the first image instead of multiple
     setSelectedFile(e.target.files[0]);
   };
+  const onSelectAudio = (e) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      setSelectedSong(undefined);
+      return;
+    }
+
+    // I've kept this example simple by using the first image instead of multiple
+    setSelectedSong(e.target.files[0]);
+  };
+
   return (
-    <div>
-      <Button variant="primary" onClick={handleShow} className="mt-2 ms-1">
+    <div className="ms-3">
+      <Form>
+        <Form.Group className="mb-3 w-50" controlId="formBasicName">
+          <Form.Label>Name</Form.Label>
+          <Form.Control type="text" placeholder="Enter Name" ref={inputName} />
+        </Form.Group>
+        <Form.Group className="mb-3 w-50" controlId="formBasicGenre">
+          <Form.Label>Genre</Form.Label>
+          <Form.Control type="text" placeholder="Enter Genre" ref={genreRef} />
+        </Form.Group>
+        <Form.Group className="mb-3 w-50" controlId="formBasicImage">
+          <Form.Label>Image</Form.Label>
+          <Form.Control
+            type="file"
+            onChange={onSelectFile}
+            accept=".jpg,.png"
+          />
+          {selectedFile && (
+            <img src={preview} alt="ảnh" className="w-100 h-100 mt-2" />
+          )}
+        </Form.Group>
+        <Form.Group className="mb-3 w-50" controlId="formBasicAudio">
+          <Form.Label>Audio</Form.Label>
+          <Form.Control type="file" accept=".mp3" onChange={onSelectAudio} />
+        </Form.Group>
+        <Form.Group className="mb-3 w-50" controlId="formBasicLyrics">
+          <Form.Label>Lyrics</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter Lyrics"
+            ref={inputLyricsRef}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3 w-50" controlId="formBasicArtist">
+          <Form.Label>Artist</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter Artist"
+            list="browsers"
+            ref={artistRef}
+          />
+          <datalist id="browsers">
+            {artists.map((artist) => (
+              <option key={artist._id} value={artist._id}>
+                {artist.name}
+              </option>
+            ))}
+          </datalist>
+        </Form.Group>
+      </Form>
+      <Button
+        disabled={isEdit}
+        variant="primary"
+        onClick={() => {
+          handleInsert();
+          handleClear();
+        }}
+        className="mt-2 ms-1"
+      >
         Thêm
       </Button>
+
+      <Button
+        disabled={!isEdit}
+        className="mt-2 ms-1"
+        variant="primary"
+        onClick={() => {
+          handleUpdate();
+          handleClear();
+        }}
+      >
+        Sửa
+      </Button>
+
       <Button variant="primary" className="mt-2 ms-1" onClick={handleShowList}>
         Danh Sách
       </Button>
-      <Button variant="primary" className="mt-2 ms-1">
-        Đã Xóa
-      </Button>
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Thêm Bài Hát</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group className="mb-3" controlId="formBasicName">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter Name"
-                ref={inputName}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicGenre">
-              <Form.Label>Genre</Form.Label>
-              <Form.Control type="text" placeholder="Enter Genre" />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicImage">
-              <Form.Label>Image</Form.Label>
-              <Form.Control type="file" name="image" onChange={onSelectFile} />
-              {selectedFile && (
-                <img src={preview} alt="ảnh" className="w-100 h-100 mt-2" />
-              )}
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicAudio">
-              <Form.Label>Audio</Form.Label>
-              <Form.Control type="file" />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicLyrics">
-              <Form.Label>Lyrics</Form.Label>
-              <Form.Control type="text" placeholder="Enter Lyrics" />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicArtist">
-              <Form.Label>Artist</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter Artist"
-                list="browsers"
-              />
-              <datalist id="browsers">
-                <option value="Edge" />
-                <option value="Firefox" />
-                <option value="Chrome" />
-                <option value="Opera" />
-                <option value="Safari" />
-              </datalist>
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="primary"
-            onClick={() => {
-              handleClose();
-              handleInsert({
-                name: inputName.current.value,
-                image: selectedFile,
-              });
-              // console.log(selectedFile);
-            }}
-          >
-            Lưu
-          </Button>
-        </Modal.Footer>
-      </Modal>
       <Table striped bordered hover size="sm" className="mt-2">
         <thead>
           <tr>
-            <th>STT</th>
             <th>Name</th>
             <th>Genre</th>
             <th>Image</th>
             <th>Audio</th>
             <th>Lyrics</th>
+            <th>Artist</th>
             <th>Action</th>
           </tr>
         </thead>
         {isShowList && (
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>
-                <img
-                  src={preview}
-                  alt="ảnh"
-                  className="mt-2"
-                  width={100}
-                  height={100}
-                />
-              </td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>
-                <button>Edit</button>
-                <button className="ms-1">Delete</button>
-              </td>
-            </tr>
+            {songs.map((song) => (
+              <tr key={song._id}>
+                <td>{song.name}</td>
+                <td>{song.genre}</td>
+                <td>
+                  <img
+                    src={song.image}
+                    alt={song.name}
+                    className="mt-2"
+                    width={100}
+                    height={100}
+                  />
+                </td>
+                <td>
+                  <audio controls>
+                    <source src={song.audio} type="audio/mpeg" />
+                    Your browser does not support the audio element.
+                  </audio>
+                </td>
+                <td className="lyrics">{song.lyrics}</td>
+                <td>{song?.artist?.name}</td>
+                <td>
+                  <button
+                    onClick={() => {
+                      setIdSongs(song._id);
+                      handleEdit({
+                        id: song._id,
+                        name: song.name,
+                        image: song.image,
+                        audio: song.audio,
+                        lyrics: song.lyrics,
+                        artist: song?.artist._id,
+                        genre: song.genre,
+                      });
+                    }}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="ms-1"
+                    onClick={() => {
+                      handleDelete(song._id);
+                      // handleReload();
+                    }}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         )}
       </Table>
