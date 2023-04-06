@@ -13,9 +13,7 @@ const getAccounts = async () => {
 const insertAccount = async dataAccount => {
   const response = await fetch(`${URL}/accounts/create`, {
     method: 'POST',
-    body: JSON.stringify({
-      dataAccount,
-    }),
+    body: JSON.stringify(dataAccount),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -31,9 +29,7 @@ const insertAccount = async dataAccount => {
 const updateAccount = async dataAccount => {
   const response = await fetch(`${URL}/accounts/${dataAccount._id}`, {
     method: 'PUT',
-    body: JSON.stringify({
-      dataAccount,
-    }),
+    body: JSON.stringify(dataAccount),
     headers: {
       'Content-Type': 'application/json',
     },

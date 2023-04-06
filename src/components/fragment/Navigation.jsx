@@ -1,28 +1,28 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import '../assets/scss/Navigation.scss';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-//import DropDownLanguageList from "./DropDownLanguageList";
 import SearchBar from './SearchBar';
 import Brand from './Brand';
 import DropDownProfile from './DropDownProfile';
-import { Avatar, Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
+import Cookies from 'js-cookie';
 import { ThemeContext } from '../../api/Theme';
 import { Link } from 'react-router-dom';
+import { getUser } from '../../api/apiuser';
 
 function Navigation() {
+  const [profileUser, setProfileUser] = useState();
   const [isLanguageListOpen, setLangList] = useState(false);
   const [isOpenProfile, setOpenProfile] = useState(false);
-  const [isLogin, setLogin] = useState(false);
 
-  //   function handleOpenLanguageList() {
-  //     if (isOpenProfile === true) setOpenProfile(!isOpenProfile);
-  //     setLangList(!isLanguageListOpen);
-  //   }
+  useEffect(() => {
+    getUser()
+      .then(data => setProfileUser(data))
+      .catch(err => console.log(err));
+  }, []);
 
-  function handleLogOut() {
-    setLogin(false);
-  }
+  console.log(profileUser);
 
   function handleOpenProfile() {
     if (isLanguageListOpen === true) setLangList(!isLanguageListOpen);
@@ -34,26 +34,21 @@ function Navigation() {
       <Brand />
       <div className={'navigation'}></div>
       <SearchBar />
-      {!isLogin && (
+      {Cookies.get('token') === undefined && (
         <div>
           <Link to={'/signin'} className="link">
             Log In
           </Link>
         </div>
       )}
-      {isLogin && (
+      {!(Cookies.get('token') === undefined) && (
         <div className="profile" onClick={handleOpenProfile}>
           <Button
             className={'Dropdown-btn'}
-            startIcon={
-              <Avatar
-                style={{ width: '30px', height: '30px', padding: '18px' }}
-              >
-                VS
-              </Avatar>
-            }
             endIcon={isOpenProfile ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-          ></Button>
+          >
+            {profileUser?.name}
+          </Button>
           {isOpenProfile && <DropDownProfile />}
         </div>
       )}

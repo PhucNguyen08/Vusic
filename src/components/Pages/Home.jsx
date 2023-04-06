@@ -1,22 +1,22 @@
 import React, { useContext, useEffect, useState } from 'react';
-import './css/Home.scss';
+import { useSelector } from 'react-redux';
+import { ThemeContext } from '../../api/Theme';
+import { Skeleton } from '@material-ui/lab';
 import Navigation from '../fragment/Navigation';
 import MobileTopNavigation from '../fragment/MobileTopNavigation';
 import SideBar from '../fragment/SideBar';
 import FooterMusicPlayer from '../fragment/FooterMusicPlayer';
 import BottomNavigationMobile from '../fragment/BottomNavigationMobile';
 import MusicCardContainer from '../fragment/MusicCardContainer';
-import { useSelector } from 'react-redux';
-import { ThemeContext } from '../../api/Theme';
 import Profile from './Profile';
 import AddMusic from '../fragment/AddMusic';
-import About from './About';
 import FooterSelectMusic from '../fragment/FooterSelectMusic';
 import CurrentPlayingLarge from '../fragment/CurrentPlayingLarge';
 import Search from './Search';
 import AlbumCardContainer from '../fragment/AlbumCardContainer';
 import Playlist from '../fragment/Playlist';
-import { Skeleton } from '@material-ui/lab';
+import DetailAlbum from './DetailAlbum';
+import './css/Home.scss';
 
 function getCurrPage(pathName) {
   switch (pathName) {
@@ -31,11 +31,11 @@ function getCurrPage(pathName) {
     case '/home/album':
       return <AlbumCardContainer />;
     default:
-      if (pathName.startsWith('/home/playlist/')) {
+      if (pathName.startsWith('/home/playlists/')) {
         return <Playlist />;
       }
       if (pathName.startsWith('/home/album/')) {
-        return <About />;
+        return <DetailAlbum />;
       }
       return null;
   }

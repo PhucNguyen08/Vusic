@@ -1,7 +1,5 @@
-import musicDB from '../db/music';
-
 export const initialState = {
-  playlists: musicDB,
+  playlists: [],
   playing: null,
   bannerOpen: false,
   search: null,
@@ -25,7 +23,7 @@ const musicReducer = (state = initialState, action) => {
         bannerOpen: action.payload,
       };
     case 'INC_TIMES_PLAYED':
-      musicDB[action.payload].timesPlayed += 1;
+      state.playlists[action.payload].timesPlayed += 1;
       return state;
     case 'SET_SEARCH_QUERY':
       return {
