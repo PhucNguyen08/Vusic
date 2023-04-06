@@ -28,19 +28,26 @@ const insertPlaylist = async dataPlaylist => {
 };
 
 const insertPlaylistAxios = async dataPlaylist => {
-  const response = await fetch(`${URL}/playlists/create`, {
-    method: 'POST',
-    body: JSON.stringify(dataPlaylist),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  const data = await response.json();
+  axios
+    .post(`${URL}/playlists/create`, dataPlaylist)
+    .then(res => {
+      alert('Bạn đã thêm mới thành công');
+      console.log(res);
+    })
+    .catch(err => console.log(err));
+  // const response = await fetch(`${URL}/playlists/${id}/create`, {
+  //   method: 'POST',
+  //   body: JSON.stringify(dataPlaylist),
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  // });
+  // const data = await response.json();
 
-  if (!response.ok) {
-    throw new Error('Could not playlists');
-  }
-  return data;
+  // if (!response.ok) {
+  //   throw new Error('Could not playlists');
+  // }
+  // return data;
 };
 
 const updatePlaylist = async dataPlaylist => {

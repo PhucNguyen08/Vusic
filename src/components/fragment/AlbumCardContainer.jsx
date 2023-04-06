@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import '../assets/scss/AlbumCardContainer.scss';
 import AlbumCard from './AlbumCard';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import Container from './Container';
 import { Route, Switch } from 'react-router-dom';
 import DetailAlbum from '../Pages/DetailAlbum';

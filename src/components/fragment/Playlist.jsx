@@ -10,9 +10,10 @@ import '../assets/scss/Playlist.scss';
 
 const Playlist = props => {
   const [songs, setSongs] = useState([]);
-  const typeOfPlaylist = window.location.pathname.substring(15);
+  const typeOfPlaylist = window.location.pathname.substring(16);
   console.log(typeOfPlaylist);
   const { playlists } = useSelector(state => state.musicReducer);
+  // console.log(playlists);
   const list = playlists.find(item => item._id === typeOfPlaylist);
   console.log(list);
 
@@ -31,7 +32,7 @@ const Playlist = props => {
       <div className={'Playlist'}>
         <h3>Your {typeOfPlaylist} playlist</h3>
         <div className="wrapper">
-          <img src={list.image} alt="hinhanh" width={100} height={100} />
+          {/* <img src={list.image} alt="hinhanh" width={100} height={100} /> */}
           <h2 className="name">{list.name}</h2>
         </div>
         <Button variant="primary" className="mt-2">

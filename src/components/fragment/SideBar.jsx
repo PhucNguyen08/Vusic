@@ -6,7 +6,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Cookies from 'js-cookie';
-import { insertPlaylist } from '../../api/apiplayist';
+import { insertPlaylistAxios } from '../../api/apiplayist';
 import jwt_decode from 'jwt-decode';
 import '../assets/scss/SideBar.scss';
 
@@ -30,7 +30,7 @@ function SideBar() {
     // console.log(datalist);
     const data = new FormData();
     data.append('name', inputCreateRef.current.value);
-    insertPlaylist(data)
+    insertPlaylistAxios(data, decoded._id)
       .then(data => console.log(data))
       .catch(err => console.log(err));
   };
