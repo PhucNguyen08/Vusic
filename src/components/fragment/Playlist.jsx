@@ -28,9 +28,11 @@ const Playlist = props => {
 
   const handleDelete = async id => {
     await deleteSongToPlaylistAxios(typeOfPlaylist, id);
-    await getOnePlaylist(typeOfPlaylist)
-      .then(data => setSongsPlaylist(data.songs))
-      .catch(err => console.log(err));
+    await setTimeout(() => {
+      getOnePlaylist(typeOfPlaylist)
+        .then(data => setSongsPlaylist(data.songs))
+        .catch(err => console.log(err));
+    }, 1000);
   };
 
   const handleDeleteAll = async () => {
@@ -46,9 +48,11 @@ const Playlist = props => {
 
   const handleInsert = async id => {
     await insertSongToPlaylistAxios(typeOfPlaylist, id);
-    await getOnePlaylist(typeOfPlaylist)
-      .then(data => setSongsPlaylist(data.songs))
-      .catch(err => console.log(err));
+    await setTimeout(() => {
+      getOnePlaylist(typeOfPlaylist)
+        .then(data => setSongsPlaylist(data.songs))
+        .catch(err => console.log(err));
+    }, 1000);
   };
 
   useEffect(() => {
