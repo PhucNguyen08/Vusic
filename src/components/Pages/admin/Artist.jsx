@@ -121,9 +121,9 @@ function Artist() {
     data.append('sex', inputSexRef.current.value);
     data.append('birthday', inputBirthdayRef.current.value);
 
-    insertArtistAxios(data);
+    await insertArtistAxios(data);
     await getArtists()
-      .then(data => setArtists(data))
+      .then(res => setArtists(res))
       .catch(err => alert(err));
   };
 

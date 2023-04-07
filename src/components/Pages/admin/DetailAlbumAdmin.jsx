@@ -14,8 +14,6 @@ function DetailAlbumAdmin() {
   const [songs, setSongs] = useState([]);
   const [songAlbum, setSongAlbum] = useState([]);
 
-  console.log(albumId);
-
   console.log(songAlbum);
 
   useEffect(() => {
@@ -53,7 +51,6 @@ function DetailAlbumAdmin() {
         <Table striped bordered hover size="sm" className="mt-2">
           <thead>
             <tr>
-              <th>Id</th>
               <th>Name</th>
               <th>Image</th>
               <th>Audio</th>
@@ -63,7 +60,6 @@ function DetailAlbumAdmin() {
           <tbody>
             {songAlbum.map((song, i) => (
               <tr key={i}>
-                <td>{song._id}</td>
                 <td>{song.name}</td>
                 <td>
                   <img

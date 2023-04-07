@@ -11,7 +11,7 @@ function SideBarAdmin() {
         <p className={'p1'}>
           <span>LIBRARY</span>
         </p>
-        <SideBarOptions className={'lib-sub'} href={'/admin'} title={'Home'} />
+        {/* <SideBarOptions className={'lib-sub'} href={'/admin'} title={'Home'} /> */}
         <SideBarOptions
           className={'lib-sub'}
           href={'/admin/songs'}

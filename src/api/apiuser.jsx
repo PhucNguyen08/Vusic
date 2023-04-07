@@ -1,3 +1,4 @@
+import axios from 'axios';
 const URL = 'http://localhost:5000';
 
 const getUser = async () => {
@@ -24,6 +25,14 @@ const insertUser = async dataUsers => {
     throw new Error('Could not insert user');
   }
   return data;
+};
+const insertUserAxios = async dataUsers => {
+  axios
+    .post(`${URL}/auth/register`, dataUsers)
+    .then(res => {
+      alert(res.data.message);
+    })
+    .catch(err => alert(err.response.data.message));
 };
 
 const loginUser = async dataUsers => {
@@ -73,4 +82,11 @@ const deleteUser = async id => {
   return data;
 };
 
-export { getUser, insertUser, updateUser, deleteUser, loginUser };
+export {
+  getUser,
+  insertUser,
+  updateUser,
+  deleteUser,
+  loginUser,
+  insertUserAxios,
+};

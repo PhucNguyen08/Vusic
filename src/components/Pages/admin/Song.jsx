@@ -1,24 +1,28 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from 'react';
 import {
   getSongs,
   insertSongAxios,
   deleteSong,
   updateSong,
-} from "../../../api/apisong";
-import { getArtists } from "../../../api/apiaritst";
-import Table from "react-bootstrap/Table";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
+  searchSong,
+  sortSong,
+} from '../../../api/apisong';
+import { getArtists } from '../../../api/apiaritst';
+import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 // import Modal from 'react-bootstrap/Modal';
 
-import "bootstrap/dist/css/bootstrap.min.css";
-import "../css/Song.scss";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../css/Song.scss';
 
 function Song() {
   const inputName = useRef();
   const genreRef = useRef();
   const inputLyricsRef = useRef();
   const artistRef = useRef();
+  const inputSearchRef = useRef();
+  const sortByRef = useRef();
   const [selectedFile, setSelectedFile] = useState();
   const [selectedSong, setSelectedSong] = useState();
   const [preview, setPreview] = useState();
@@ -30,7 +34,7 @@ function Song() {
 
   const handleShowList = () => setIsShowList(true);
 
-  const handleEdit = (data) => {
+  const handleEdit = data => {
     setIsEdit(true);
     inputName.current.value = data.name;
     genreRef.current.value = data.genre;
@@ -40,22 +44,26 @@ function Song() {
 
   // console.log(IdSongs);
 
-  const handleDelete = async (id) => {
-    await deleteSong(id)
-      .then((data) => {
-        // console.log(data);
-        alert(data.message);
-      })
-      .catch((err) => alert(err));
-    await getSongs()
-      .then((data) => setSongs(data))
-      .catch((err) => alert(err));
+  const handleDelete = async id => {
+    if (window.confirm('Are you sure you want to delete this song?')) {
+      await deleteSong(id)
+        .then(data => {
+          // console.log(data);
+          alert(data.message);
+        })
+        .catch(err => alert(err));
+      await getSongs()
+        .then(data => setSongs(data))
+        .catch(err => alert(err));
+    } else {
+      alert('Bạn k xóa');
+    }
   };
 
   useEffect(() => {
     getArtists()
-      .then((data) => setArtists(data))
-      .catch((err) => alert(err));
+      .then(data => setArtists(data))
+      .catch(err => alert(err));
   }, []);
 
   // const handleClose = () => setShow(false);
@@ -65,51 +73,70 @@ function Song() {
 
   const handleUpdate = async () => {
     const data = new FormData();
-    data.append("name", inputName.current.value);
+    data.append('name', inputName.current.value);
     if (selectedFile) {
-      data.append("image", selectedFile);
+      data.append('image', selectedFile);
     }
-    data.append("lyrics", inputLyricsRef.current.value);
+    data.append('lyrics', inputLyricsRef.current.value);
     if (selectedSong) {
-      data.append("audio", selectedSong);
+      data.append('audio', selectedSong);
     }
-    data.append("artist", artistRef.current.value);
-    data.append("genre", genreRef.current.value);
+    data.append('artist', artistRef.current.value);
+    data.append('genre', genreRef.current.value);
     setIsEdit(false);
     await updateSong(data, IdSongs);
     await getSongs()
-      .then((data) => setSongs(data))
-      .catch((err) => alert(err));
+      .then(data => setSongs(data))
+      .catch(err => alert(err));
   };
 
   const handleClear = () => {
-    inputName.current.value = "";
-    genreRef.current.value = "";
-    inputLyricsRef.current.value = "";
-    artistRef.current.value = "";
+    inputName.current.value = '';
+    genreRef.current.value = '';
+    inputLyricsRef.current.value = '';
+    artistRef.current.value = '';
     setPreview(undefined);
     setSelectedFile(undefined);
     setSelectedSong(undefined);
   };
 
+  const handleSearch = async () => {
+    if (inputSearchRef.current.value === '') {
+      await getSongs()
+        .then(data => setSongs(data))
+        .catch(err => alert(err));
+    } else {
+      await searchSong(inputSearchRef.current.value.trim())
+        .then(data => setSongs(data))
+        .catch(err => alert(err));
+    }
+    inputSearchRef.current.value = '';
+  };
+
+  // const handleGet = async () => {
+  //   await getSongs()
+  //     .then(data => setSongs(data))
+  //     .catch(err => alert(err));
+  // };
+
   const handleInsert = async () => {
     const data = new FormData();
-    data.append("name", inputName.current.value);
-    data.append("image", selectedFile);
-    data.append("lyrics", inputLyricsRef.current.value);
-    data.append("audio", selectedSong);
-    data.append("artist", artistRef.current.value);
-    data.append("genre", genreRef.current.value);
+    data.append('name', inputName.current.value);
+    data.append('image', selectedFile);
+    data.append('lyrics', inputLyricsRef.current.value);
+    data.append('audio', selectedSong);
+    data.append('artist', artistRef.current.value);
+    data.append('genre', genreRef.current.value);
     await insertSongAxios(data);
     await getSongs()
-      .then((data) => setSongs(data))
-      .catch((err) => alert(err));
+      .then(res => setSongs(res))
+      .catch(err => alert(err));
   };
 
   useEffect(() => {
     getSongs()
-      .then((data) => setSongs(data))
-      .catch((err) => alert(err));
+      .then(data => setSongs(data))
+      .catch(err => alert(err));
   }, []);
 
   // create a preview as a side effect, whenever selected file is changed
@@ -126,7 +153,7 @@ function Song() {
     return () => URL.revokeObjectURL(objectUrl);
   }, [selectedFile]);
 
-  const onSelectFile = (e) => {
+  const onSelectFile = e => {
     if (!e.target.files || e.target.files.length === 0) {
       setSelectedFile(undefined);
       return;
@@ -135,7 +162,7 @@ function Song() {
     // I've kept this example simple by using the first image instead of multiple
     setSelectedFile(e.target.files[0]);
   };
-  const onSelectAudio = (e) => {
+  const onSelectAudio = e => {
     if (!e.target.files || e.target.files.length === 0) {
       setSelectedSong(undefined);
       return;
@@ -143,6 +170,13 @@ function Song() {
 
     // I've kept this example simple by using the first image instead of multiple
     setSelectedSong(e.target.files[0]);
+  };
+
+  const handleSort = async () => {
+    console.log(sortByRef.current.value);
+    await sortSong(sortByRef.current.value)
+      .then(data => setSongs(data))
+      .catch(err => alert(err));
   };
 
   return (
@@ -188,7 +222,7 @@ function Song() {
             ref={artistRef}
           />
           <datalist id="browsers">
-            {artists.map((artist) => (
+            {artists.map(artist => (
               <option key={artist._id} value={artist._id}>
                 {artist.name}
               </option>
@@ -219,9 +253,34 @@ function Song() {
       >
         Sửa
       </Button>
-
       <Button variant="primary" className="mt-2 ms-1" onClick={handleShowList}>
         Danh Sách
+      </Button>
+      {/* <Button variant="primary" className="mt-2 ms-1" onClick={handleGet}>
+        Get All
+      </Button> */}
+      <Form.Select
+        // aria-label="Default select example"
+        className="mt-2 ms-1 w-25"
+        ref={sortByRef}
+      >
+        <option disabled selected>
+          Open this select sort
+        </option>
+        <option value="asc">Asc</option>
+        <option value="desc">Desc</option>
+      </Form.Select>
+      <Button variant="primary" className="mt-2 ms-1" onClick={handleSort}>
+        Sắp Xếp
+      </Button>
+      <Form.Control
+        type="text"
+        placeholder="Search"
+        className="mt-2 ms-1 w-50"
+        ref={inputSearchRef}
+      />
+      <Button variant="primary" className="mt-2 ms-1" onClick={handleSearch}>
+        Tìm Kiếm
       </Button>
       <Table striped bordered hover size="sm" className="mt-2">
         <thead>
@@ -237,7 +296,7 @@ function Song() {
         </thead>
         {isShowList && (
           <tbody>
-            {songs.map((song) => (
+            {songs.map(song => (
               <tr key={song._id}>
                 <td>{song.name}</td>
                 <td>{song.genre}</td>

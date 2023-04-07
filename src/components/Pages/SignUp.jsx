@@ -10,7 +10,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { insertUser } from '../../api/apiuser';
+import { insertUserAxios } from '../../api/apiuser';
 
 function Copyright(props) {
   return (
@@ -46,9 +46,18 @@ export default function SignUp() {
       username: data.get('email'),
       password: data.get('password'),
     });
-    insertUser(dataUser)
-      .then(data => console.log(data))
-      .catch(err => alert(err));
+    if (
+      data
+        .get('email')
+        .trim()
+        .match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)
+    ) {
+      insertUserAxios(dataUser);
+      // .then(data => alert(data.message))
+      // .catch(err => console.log(err));
+    } else {
+      alert('Nhập đúng định dạng email');
+    }
   };
 
   return (

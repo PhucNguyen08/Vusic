@@ -64,7 +64,7 @@ function Album() {
     setIsEdit(false);
     await updateAlbum(data, idAlbum);
     await getAlbums()
-      .then(data => setAlbums(data))
+      .then(res => setAlbums(res))
       .catch(err => alert(err));
   };
 

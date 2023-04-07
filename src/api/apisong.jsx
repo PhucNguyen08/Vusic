@@ -62,4 +62,32 @@ const deleteSong = async id => {
   return data;
 };
 
-export { getSongs, insertSong, updateSong, deleteSong, insertSongAxios };
+const searchSong = async input => {
+  const response = await fetch(`${URL}/songs?_find&search=${input}`);
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error('Could not Songs');
+  }
+  return data;
+};
+
+const sortSong = async input => {
+  const response = await fetch(`${URL}/songs?_sort&column=name&type=${input}`);
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error('Could not Songs');
+  }
+  return data;
+};
+
+export {
+  getSongs,
+  insertSong,
+  updateSong,
+  deleteSong,
+  insertSongAxios,
+  searchSong,
+  sortSong,
+};

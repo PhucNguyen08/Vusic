@@ -49,7 +49,7 @@ const insertSongToAlbumAxios = (idAlbum, data) => {
 
 const deleteSongToAlbumAxios = (idAlbum, data) => {
   axios
-    .delete(`${URL}/albums/${idAlbum}/delete-song`, data)
+    .put(`${URL}/albums/${idAlbum}/delete-song`, data)
     .then(res => {
       console.log(res);
       alert(res.data.message);

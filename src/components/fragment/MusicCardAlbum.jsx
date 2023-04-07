@@ -15,7 +15,7 @@ function MusicCardAlbum(props) {
 
   return (
     <Container>
-      <div className={'music-card-container'}>
+      <div className={'flex'}>
         {songs.map((item, i) => (
           <MusicCard key={item._id} music={item} id={i} />
         ))}
